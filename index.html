@@ -43,6 +43,8 @@
     let stars = [];
     const NUM_STARS = 300;
     let w, h;
+    let boost = 1;
+    let pressing = false;
 
     function resize() {
       w = canvas.width = window.innerWidth;
@@ -69,6 +71,8 @@
     }
 
     function draw() {
+      if (!pressing && boost > 1) boost = Math.max(1, boost - 0.08);
+
       ctx.fillStyle = 'rgba(10, 10, 10, 0.15)';
       ctx.fillRect(0, 0, w, h);
 
@@ -78,7 +82,7 @@
       for (let i = 0; i < stars.length; i++) {
         const s = stars[i];
         s.prevZ = s.z;
-        s.z -= s.speed;
+        s.z -= s.speed * boost;
 
         if (s.z <= 0) {
           stars[i] = createStar();
@@ -135,6 +139,19 @@
 
     prefersReducedMotion.addEventListener('change', () => {
       location.reload();
+    });
+
+    canvas.addEventListener('pointerdown', () => {
+      pressing = true;
+      boost = 5;
+    });
+
+    window.addEventListener('pointerup', () => {
+      pressing = false;
+    });
+
+    window.addEventListener('pointercancel', () => {
+      pressing = false;
     });
   </script>
 </body>
